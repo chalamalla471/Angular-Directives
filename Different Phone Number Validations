@@ -1,0 +1,40 @@
+var LOCALPHONE_REGEXP = /^[(]{0,1}[0-9]{3}[)\.\- ]{0,1}[0-9]{3}[\.\- ]{0,1}[0-9]{4}$/;
+var INTLPHONE_REGEXP = /^\+(?:[0-9] ?){6,14}[0-9]$/;
+var INVALID_NUM = 1111111111;
+
+	
+var app = angular.module('MyApp');
+
+app.directive('phoneValidation',[function(){
+    return {
+        restrict:'A',
+		scope:{
+			phoneNumberType: '@',
+			callbackMethod:'='
+		},
+        link: function(scope, element, attrs, ctrl) {
+            angular.element(element).bind('blur', function() {
+            	var isValid = false;
+                var value = this.value;
+				switch(scope.phoneNumberType){
+				case "U": if(LOCALPHONE_REGEXP.test(value) && INVALID_NUM!=value) {
+						console.log("valid US phone number");
+						isValid = true;
+					} 
+					break;
+				case "I": if(INTLPHONE_REGEXP.test(value)) {
+						console.log("valid International phone number");
+						isValid = true;
+					}
+					break;
+				case "B": if(INTLPHONE_REGEXP.test(value) || LOCALPHONE_REGEXP.test(value)) {
+						console.log("valid phone number");
+						isValid = true;
+					}
+					break;         
+                }
+				scope.$apply(scope.callbackMethod(isValid));
+            });              
+        }            
+    }        
+}]);
