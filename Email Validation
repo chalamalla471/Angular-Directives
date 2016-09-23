@@ -1,0 +1,19 @@
+var EMAIL_REGX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+
+var app = angular.module('MyApp');	
+	
+app.directive('emailValidation',[function(){
+	    return {
+	    	restrict: 'A',
+	    	scope:{
+  				callbackMethod:'='
+  			},
+        link: function(scope, elm, attr, ctrl) {
+            if (attr.type === 'radio' || attr.type === 'checkbox') return;
+            elm.bind('blur', function() {
+                scope.$apply(scope.callbackMethod(EMAIL_REGX.test(elm.val())));
+            });
+        }
+      }
+    }
+]);
